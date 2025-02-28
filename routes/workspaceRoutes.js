@@ -6,16 +6,9 @@ const path = require('path');
 const isAuthenticated = require('../authMiddleware');
 
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/images/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+const storage = multer.memoryStorage();
 
-const upload = multer({ dest: 'public/images/' });
+const upload = multer({ storage: storage });
 
 router.post('/workspaces', isAuthenticated, upload.array('images', 5), workspaceController.createWorkspace);
 router.get('/workspaces', workspaceController.getAllWorkspaces);
