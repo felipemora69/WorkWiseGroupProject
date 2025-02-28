@@ -29,7 +29,7 @@ const oauth2Client = new google.auth.OAuth2(
 const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
 // Multer setup for file handling
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI).then(() => {
@@ -97,7 +97,6 @@ app.post('/api/workspaces', async (req, res) => {
     try {
         const { name, category, price, description, location, address, area, capacity, smoking, parking, distanceToTransport, images } = req.body;
         
-        // Assume workspace creation logic here
         const newWorkspace = {
             name, category, price, description, location, address, area, capacity, smoking, parking, distanceToTransport
         };
@@ -105,15 +104,16 @@ app.post('/api/workspaces', async (req, res) => {
         // If images are provided, upload them to Google Drive
         const imageUrls = [];
         for (const image of images) {
-            const imageUrl = await uploadImageToGoogleDrive(image);
+            const imageUrl = await uploadImageToGoogleDrive(image); // Upload image and get URL
             imageUrls.push(imageUrl);
         }
 
-        // Save workspace along with image URLs in the database (example)
-        newWorkspace.images = imageUrls;
-        await newWorkspace.save();
+        newWorkspace.images = imageUrls;  // Save the image URLs in the workspace object
 
-        res.status(200).json(newWorkspace);
+        // Assume that you're saving to MongoDB or some other database here
+        // await newWorkspace.save();  // Uncomment this line for actual DB saving
+
+        res.status(200).json(newWorkspace);  // Return the workspace object with image URLs
     } catch (error) {
         console.error('Error creating workspace:', error);
         res.status(500).send('Error creating workspace');
@@ -122,55 +122,45 @@ app.post('/api/workspaces', async (req, res) => {
 
 // Function to upload an image to Google Drive
 async function uploadImageToGoogleDrive(image) {
-    const formData = new FormData();
-    formData.append('file', image);
-
     try {
-        const googleDriveResponse = await fetch('/upload-to-google-drive', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!googleDriveResponse.ok) {
-            throw new Error('Failed to upload image to Google Drive');
-        }
-
-        const googleDriveData = await googleDriveResponse.json();
-        return googleDriveData.fileUrl; // Return the file URL
-    } catch (error) {
-        console.error('Error uploading image to Google Drive:', error);
-        return null; // Return null if upload fails
-    }
-}
-
-// Route to upload image to Google Drive
-app.post('/upload-to-google-drive', upload.single('file'), async (req, res) => {
-    try {
-        const filePath = path.join(__dirname, req.file.path);
         const fileMetadata = {
-            name: req.file.originalname,
+            name: image.originalname,  // Original file name
             parents: ['YOUR_GOOGLE_DRIVE_FOLDER_ID']  // Optionally specify folder ID in Google Drive
         };
+        
         const media = {
-            mimeType: req.file.mimetype,
-            body: fs.createReadStream(filePath)
+            mimeType: image.mimetype,
+            body: Buffer.from(image.buffer)  // Use the buffer stored in memory
         };
 
         // Upload the file to Google Drive
         const response = await drive.files.create({
             resource: fileMetadata,
             media: media,
-            fields: 'id, webViewLink'
+            fields: 'id, webViewLink'  // Return the file ID and URL
         });
 
-        // Delete the temporary file after upload
-        fs.unlinkSync(filePath);
-
-        // Return the Google Drive URL (or file ID)
-        res.json({ fileUrl: response.data.webViewLink });
+        // Return the Google Drive URL
+        return response.data.webViewLink;  // Return the URL of the uploaded file
     } catch (error) {
-        console.error('Error uploading to Google Drive:', error);
-        res.status(500).send('Failed to upload file to Google Drive');
+        console.error('Error uploading image to Google Drive:', error);
+        return null;  // Return null if upload fails
+    }
+}
+
+// Route to upload image to Google Drive
+app.post('/upload-to-google-drive', upload.single('file'), async (req, res) => {
+    try {
+        const imageUrl = await uploadImageToGoogleDrive(req.file);  // Pass the image file from memory
+        
+        if (imageUrl) {
+            res.json({ fileUrl: imageUrl });  // Return the URL of the uploaded file
+        } else {
+            res.status(500).send('Failed to upload image');
+        }
+    } catch (error) {
+        console.error('Error in /upload-to-google-drive:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
