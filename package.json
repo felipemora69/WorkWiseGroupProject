@@ -1,11 +1,11 @@
 {
-  "name": "finalprojectwwp01",
+  "name": "workwisegroupproject",
   "version": "1.0.0",
   "description": "This fullstack project is based on a rent spaces website, that the co-worker or owner can find an alternative, different and interesting option to rent spaces for work, study or projects.\r The co-worker can browse and interact with the spaces and different typologies, and the owner can create an account with us to offer and publish their properties for rent with the main specifications\r that the user needs.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js "
+    "start": "node api/app.js "
   },
   "keywords": [],
   "author": "",

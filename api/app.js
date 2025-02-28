@@ -49,7 +49,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: store,
-    cookie: { secure: false} 
+    cookie: { secure: process.env.NODE_ENV === 'production' } 
 }));
 
 app.get('/login', (req, res) => {
@@ -130,7 +130,7 @@ async function uploadImageToGoogleDrive(image) {
         
         const media = {
             mimeType: image.mimetype,
-            body: Buffer.from(image.buffer)  // Use the buffer stored in memory
+            body: Buffer.from(image.buffer)
         };
 
         // Upload the file to Google Drive
@@ -164,9 +164,31 @@ app.post('/upload-to-google-drive', upload.single('file'), async (req, res) => {
     }
 });
 
-// Serverless function handler for Vercel
+// Google OAuth2 setup for Vercel
+app.get('/auth/google', (req, res) => {
+    const authUrl = oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: ['https://www.googleapis.com/auth/drive.file'],
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI // Use the redirect URI from environment variable
+    });
+    res.redirect(authUrl);
+});
+
+app.get('/oauth2callback', async (req, res) => {
+    const { code } = req.query;
+    try {
+        const { tokens } = await oauth2Client.getToken(code);
+        oauth2Client.setCredentials(tokens);
+        res.send('Google Drive authentication successful!');
+    } catch (error) {
+        console.error('Error during OAuth callback:', error);
+        res.status(500).send('Error during authentication');
+    }
+});
+
+// Serve static files and handle front-end pages
 app.get('/', (req, res) => {
-    res.send('Hello, Vercel!');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Serve HTML files
@@ -202,7 +224,7 @@ app.get('/product', (req, res) => {
 module.exports = app;
 
 //Start Server
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// const PORT = process.env.PORT || 8000;
+// app.listen(PORT, () => {
+//     console.log(`Server is running on http://localhost:${PORT}`);
+// });
