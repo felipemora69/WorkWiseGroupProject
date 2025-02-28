@@ -16,15 +16,25 @@ document.querySelector('.login-form').addEventListener('submit', async function(
         });
 
         const data = await response.json();
-        console.log(data); // Log response from server
+
+        console.log(data);
 
         // Redirect based on server response (userType)
-        if (data.userType === 'owner') {
-            window.location.href = '/owner.html';
-        } else if (data.userType === 'coworker') {
-            window.location.href = '/co-worker.html';
+        if (response.ok) {
+            // Store the token in localStorage or a cookie
+            localStorage.setItem('token', data.token);
+            console.log('Login successful. Redirecting...');
+
+            // Redirect based on userType
+            if (data.userType === 'owner') {
+                window.location.href = '/owner.html';
+            } else if (data.userType === 'coworker') {
+                window.location.href = '/co-worker.html';
+            } else {
+                console.log('Invalid user type');
+            }
         } else {
-            console.log('Invalid user type');
+            console.error('Login failed:', data.error);
         }
 
     } catch (error) {

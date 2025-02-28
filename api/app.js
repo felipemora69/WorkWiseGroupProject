@@ -222,9 +222,3 @@ app.get('/product', (req, res) => {
 });
 
 module.exports = app;
-
-//Start Server
-// const PORT = process.env.PORT || 8000;
-// app.listen(PORT, () => {
-//     console.log(`Server is running on http://localhost:${PORT}`);
-// });

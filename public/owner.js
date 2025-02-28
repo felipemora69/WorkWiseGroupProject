@@ -1,7 +1,20 @@
 document.addEventListener("DOMContentLoaded", async function() {
     try {
+
+        // Retrieve the token from localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login.html'; // Redirect to login if no token found
+            return;
+        }
+        
         // Fetch user profile data
-        const userResponse = await fetch('/user/profile');
+        const userResponse = await fetch('/user/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         const userData = await userResponse.json();
 
         // Display user profile data

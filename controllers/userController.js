@@ -30,11 +30,13 @@ const signup = async (req, res) => {
         // Save the new user to MongoDB
         await newUser.save();
 
-        req.session.userId = newUser._id;
+        // Create a JWT token
+        const token = jwt.sign(
+            { id: newUser._id, userType: newUser.userType },
+            config.secret,
+            { expiresIn: '1h' }
+        );
 
-
-        // Redirect user based on userType using absolute path
-        const token = jwt.sign({ id: newUser._id }, config.secret, { expiresIn: '1h' });
         res.status(200).json({ token, userType: newUser.userType });
     } catch (error) {
         console.error('Signup error:', error);
@@ -59,10 +61,13 @@ const login = async (req, res) => {
             return res.status(401).json({ error: 'Incorrect password' });
         }
 
-        req.session.userId = user._id;
+       // Create a JWT token
+       const token = jwt.sign(
+        { id: user._id, userType: user.userType },  // Payload includes user ID and userType
+        config.secret,  // Use your JWT secret from the config
+        { expiresIn: '1h' }  // Token expiration (1 hour)
+    );
 
-
-        const token = jwt.sign({ id: user._id }, config.secret, { expiresIn: '1h' });
         res.status(200).json({ token, userType: user.userType });
     } catch (error) {
         console.error('Login error:', error);
