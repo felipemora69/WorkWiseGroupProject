@@ -5,10 +5,10 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const workspaceRoutes = require('./routes/workspaceRoutes');
-const bookingRouter = require('./routes/bookingRoutes');
-const userRoutes = require('./routes/userRoutes');
-const isAuthenticated = require('./authMiddleware');
+const workspaceRoutes = require('../routes/workspaceRoutes');
+const bookingRouter = require('../routes/bookingRoutes');
+const userRoutes = require('../routes/userRoutes');
+const isAuthenticated = require('../authMiddleware');
 
 const app = express();
 app.use(express.json());
@@ -16,7 +16,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
-const dbURI = 'mongodb+srv://paulamora200525:Morita200525@cluster0.zqaulnw.mongodb.net/test?retryWrites=true&w=majority';
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+const dbURI = process.env.MONGODB_URI;
+mongoose.connect(dbURI).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
 
 async function connect() {
     try {
@@ -84,102 +92,14 @@ app.get('/co-worker', isAuthenticated, (req, res) => {
     }
 });
 
+// Serverless function handler for Vercel
+module.exports = (req, res) => {
+    app(req, res);
+};
+
 app.use('/api', workspaceRoutes);
 app.use('/', bookingRouter);
 app.use('/user', userRoutes);
-
-// // Signup Route (POST)
-// app.post('/user/signup', async (req, res) => {
-//     try {
-//         const { email, password, fullname, phone, userType } = req.body;
-
-//         // Check if the user already exists
-//         const existingUser = await UserModel.findOne({ email });
-//         if (existingUser) {
-//             return res.status(400).send('Email is already taken.');
-//         }
-
-//         // Hash password
-//         const hashedPassword = await bcrypt.hash(password, 10);
-
-//         // Create a new user
-//         const newUser = new UserModel({
-//             email, fullname, phone, password: hashedPassword, userType
-//         });
-
-//         await newUser.save();
-//         res.status(201).json({ message: 'User created successfully', userType });
-
-//     } catch (error) {
-//         console.error('Error during signup:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-
-// // Login Route (POST)
-// app.post('user/login', async (req, res) => {
-//     const { email, password } = req.body;
-
-//     try {
-//         const user = await UserModel.findOne({ email });
-//         if (!user) {
-//             return res.status(400).send('User not found');
-//         }
-
-//         // Compare password
-//         const isPasswordValid = await bcrypt.compare(password, user.password);
-//         if (!isPasswordValid) {
-//             return res.status(400).send('Invalid email or password.');
-//         }
-
-//         // Set session data
-//         req.session.userId = user._id; // Store user ID in session
-
-//         res.json({
-//             userType: user.userType,
-//             fullname: user.fullname,
-//             email: user.email
-//         });
-
-//     } catch (error) {
-//         console.error('Error during login:', error);
-//         res.status(500).send('Internal Server Error');
-//     }
-// });
-
-// // Logout Route (to clear session)
-// app.post('/logout', (req, res) => {
-//     req.session.destroy((err) => {
-//         if (err) {
-//             return res.status(500).send('Error during logout');
-//         }
-//         res.json({ message: 'Logged out successfully' });
-//     });
-// });
-
-// app.post('/co-worker', async (req, res) => {
-//     const { Name } = req.body;
-
-//     try {
-//         const user = await UserModel.find({ fullname: Name });
-            
-//         if (!user) {
-//             return res.status(404).json({ error: 'User not found' });
-//         }
-
-//         const coworkerSpaces = await Workspace.find({ email: user.email });
-            
-//         res.status(200).json({
-//             fullname: user.fullname,
-//             email: user.email,
-//             phone: user.phone,
-//             rentals: coworkerSpaces,
-//         });
-//     } catch (error) {
-//         console.error('Error fetching coworker data:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
 
 // Serve HTML files
 app.get('/finda-workspace', (req, res) => {
