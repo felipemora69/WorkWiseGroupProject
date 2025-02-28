@@ -1,25 +1,63 @@
 const Workspace = require('../models/workspaceModel');
 const multer = require('multer');
 const path = require('path');
+const { google } = require('googleapis');
+const oauth2Client = require('../routes/workspaceRoutes').oauth2Client;
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/images/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+// Function to upload files to Google Drive
+async function uploadToGoogleDrive(fileBuffer, fileName) {
+    const drive = google.drive({ version: 'v3', auth: oauth2Client });
+    const fileMetadata = {
+        name: fileName, // We can use the original file name or any custom name
+        parents: ['appDataFolder'],  // Specify folder ID in Google Drive if required
+    };
+    const media = {
+        mimeType: fileBuffer.mimetype,  // Dynamically use the MIME type
+        body: fileBuffer,  // Use the file buffer
+    };
+
+    try {
+        const response = await drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id, webViewLink',  // Fetch the ID and webViewLink (URL) after upload
+        });
+
+        console.log('File uploaded to Google Drive with ID:', response.data.id);
+        return response.data.webViewLink;  // Return the URL of the uploaded file
+    } catch (error) {
+        console.error('Error uploading file to Google Drive:', error);
+        throw new Error('Failed to upload file to Google Drive');
+    }
+}
 
 async function createWorkspace(req, res) {
     try {
         if (!req.files || req.files.length === 0) {
             return res.status(400).send('No files were uploaded.');
         }
+        // Example of uploading an image to Google Drive after authentication
+        const drive = google.drive({ version: 'v3', auth: oauth2Client });
+        const fileMetadata = {
+            name: 'sample.jpg',
+            parents: ['appDataFolder'],  // You can specify the folder if you want
+        };
+        const media = {
+            mimeType: 'image/jpeg',
+            body: req.files[0].buffer,  // File buffer for Google Drive upload
+        };
+        const response = await drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id',
+        });
+        console.log('File uploaded to Google Drive with ID:', response.data.id);
 
         const imageUrls = req.files.map(file => '/images/' + file.filename);
-
         const createdBy = req.session.userId;
 
         const workspaceData = {
@@ -63,6 +101,7 @@ const getAllWorkspaces = async (req, res) => {
     }
 };
 
+// Function to get workspaces created by the logged-in user
 const getMyWorkspaces = async (req, res) => {
     try {
         console.log('Fetching workspaces of current user...');

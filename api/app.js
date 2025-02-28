@@ -9,14 +9,27 @@ const workspaceRoutes = require('../routes/workspaceRoutes');
 const bookingRouter = require('../routes/bookingRoutes');
 const userRoutes = require('../routes/userRoutes');
 const isAuthenticated = require('../authMiddleware');
+const multer = require('multer');
+const fs = require('fs');
+const { google } = require('googleapis');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Connect to MongoDB
-require('dotenv').config();
+// Google OAuth2 Client Setup
+const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+);
+
+const drive = google.drive({ version: 'v3', auth: oauth2Client });
+
+// Multer setup for file handling
+const upload = multer({ dest: 'uploads/' });
 
 const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI).then(() => {
@@ -25,26 +38,10 @@ mongoose.connect(dbURI).then(() => {
   console.error('Error connecting to MongoDB:', error);
 });
 
-async function connect() {
-    try {
-        await mongoose.connect(dbURI);
-        console.log('Connected to MongoDB');
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-    }
-}
-
-connect();
-
 // Session store
 const store = new MongoDBStore({
     uri: dbURI,
     collection: 'sessions'
-});
-
-// Catch errors
-store.on('error', function(error) {
-    console.error('Session store error:', error);
 });
 
 app.use(session({
@@ -91,16 +88,96 @@ app.get('/co-worker', isAuthenticated, (req, res) => {
     }
 });
 
+app.use('/api', workspaceRoutes);
+app.use('/', bookingRouter);
+app.use('/user', userRoutes);
+
+// Route to handle workspace creation
+app.post('/api/workspaces', async (req, res) => {
+    try {
+        const { name, category, price, description, location, address, area, capacity, smoking, parking, distanceToTransport, images } = req.body;
+        
+        // Assume workspace creation logic here
+        const newWorkspace = {
+            name, category, price, description, location, address, area, capacity, smoking, parking, distanceToTransport
+        };
+
+        // If images are provided, upload them to Google Drive
+        const imageUrls = [];
+        for (const image of images) {
+            const imageUrl = await uploadImageToGoogleDrive(image);
+            imageUrls.push(imageUrl);
+        }
+
+        // Save workspace along with image URLs in the database (example)
+        newWorkspace.images = imageUrls;
+        await newWorkspace.save();
+
+        res.status(200).json(newWorkspace);
+    } catch (error) {
+        console.error('Error creating workspace:', error);
+        res.status(500).send('Error creating workspace');
+    }
+});
+
+// Function to upload an image to Google Drive
+async function uploadImageToGoogleDrive(image) {
+    const formData = new FormData();
+    formData.append('file', image);
+
+    try {
+        const googleDriveResponse = await fetch('/upload-to-google-drive', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!googleDriveResponse.ok) {
+            throw new Error('Failed to upload image to Google Drive');
+        }
+
+        const googleDriveData = await googleDriveResponse.json();
+        return googleDriveData.fileUrl; // Return the file URL
+    } catch (error) {
+        console.error('Error uploading image to Google Drive:', error);
+        return null; // Return null if upload fails
+    }
+}
+
+// Route to upload image to Google Drive
+app.post('/upload-to-google-drive', upload.single('file'), async (req, res) => {
+    try {
+        const filePath = path.join(__dirname, req.file.path);
+        const fileMetadata = {
+            name: req.file.originalname,
+            parents: ['YOUR_GOOGLE_DRIVE_FOLDER_ID']  // Optionally specify folder ID in Google Drive
+        };
+        const media = {
+            mimeType: req.file.mimetype,
+            body: fs.createReadStream(filePath)
+        };
+
+        // Upload the file to Google Drive
+        const response = await drive.files.create({
+            resource: fileMetadata,
+            media: media,
+            fields: 'id, webViewLink'
+        });
+
+        // Delete the temporary file after upload
+        fs.unlinkSync(filePath);
+
+        // Return the Google Drive URL (or file ID)
+        res.json({ fileUrl: response.data.webViewLink });
+    } catch (error) {
+        console.error('Error uploading to Google Drive:', error);
+        res.status(500).send('Failed to upload file to Google Drive');
+    }
+});
+
 // Serverless function handler for Vercel
 app.get('/', (req, res) => {
     res.send('Hello, Vercel!');
 });
-
-module.exports = app;
-
-app.use('/api', workspaceRoutes);
-app.use('/', bookingRouter);
-app.use('/user', userRoutes);
 
 // Serve HTML files
 app.get('/finda-workspace', (req, res) => {
@@ -131,6 +208,8 @@ app.get('/product', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+module.exports = app;
 
 //Start Server
 const PORT = process.env.PORT || 8000;

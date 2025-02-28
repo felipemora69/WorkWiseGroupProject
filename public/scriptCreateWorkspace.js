@@ -48,13 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
  
         const result = await response.json();
         console.log('Workspace created:', result);
+
+        // Get the file URLs from the response and upload to Google Drive
+        const uploadedImages = await uploadImagesToGoogleDrive(images);
+
+        // Add the URLs of images on Google Drive to the workspace data (assuming result contains the workspace data)
+        result.images = uploadedImages;
+
+        console.log('Images uploaded to Google Drive:', uploadedImages);
  
         // Reset the form
         workspaceForm.reset();
         localStorage.clear();
- 
-        // Reset the form after successful creation
-        this.reset();
  
         alert("Workspace created successfully!");
     } catch (error) {
@@ -63,3 +68,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Function to upload images to Google Drive
+async function uploadImagesToGoogleDrive(images) {
+    const uploadedImageUrls = [];
+
+    for (let i = 0; i < images.length; i++) {
+        const file = images[i];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const googleDriveResponse = await fetch('/upload-to-google-drive', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!googleDriveResponse.ok) {
+                throw new Error('Failed to upload image to Google Drive');
+            }
+
+            const googleDriveData = await googleDriveResponse.json();
+            uploadedImageUrls.push(googleDriveData.fileUrl);  // Store the URL or ID of the uploaded file
+        } catch (error) {
+            console.error('Error uploading image to Google Drive:', error);
+        }
+    }
+
+    return uploadedImageUrls;  // Return an array of uploaded image URLs
+}
