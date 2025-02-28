@@ -1,0 +1,29 @@
+{
+  "name": "finalprojectwwp01",
+  "version": "1.0.0",
+  "description": "This fullstack project is based on a rent spaces website, that the co-worker or owner can find an alternative, different and interesting option to rent spaces for work, study or projects.\r The co-worker can browse and interact with the spaces and different typologies, and the owner can create an account with us to offer and publish their properties for rent with the main specifications\r that the user needs.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "connect-mongodb-session": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-handlebars": "^7.1.2",
+    "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.5.0",
+    "mongoose": "^8.3.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.1.0"
+  }
+}

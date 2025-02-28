@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Workspace</title>
+    <link rel="stylesheet" href="stylesCreateWorkspace.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html">WorkWise</a>
+                </div>
+                <div class="menu">
+                    <ul class="menu-list">
+                        <li><a href="FindaWorkspace.html">Solutions</a></li>
+                        <li><a href="Contactus.html">Contact Us</a></li>
+                        <li><a class="a2" href="login.html">Profile</a></li>
+                        <li><a href="login.html" class="login-link" >Login<li><a href="signup.html" class="signup-link">SignUp</a></li></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Placeholder for sticky navbar -->
+    <div class="navbar-placeholder"></div>
+
+
+    <h1>Create a New Workspace</h1>
+    <form id="workspaceForm" action="/api/workspaces/post" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br><br>
+
+        <label for="category">Category:</label>
+        <select id="category" required>
+            <option value="personal-desktop">Personal Desktop</option>
+            <option value="private-office">Private Office</option>
+            <option value="small-meeting-room">Small Meeting Room</option>
+            <option value="big-meeting-room">Big Meeting Room</option>
+            <option value="whole-floor-office">Whole Floor Office</option>
+            <option value="for-events">Venues</option>
+
+        </select><br><br>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" required><br><br>
+
+        <label for="description">Description:</label><br>
+        <textarea id="description" rows="4" required></textarea><br><br>
+
+        <label for="location">Location:</label>
+        <select id="location" required>
+            <option value="Toronto">Toronto</option>
+            <option value="Calgary">Calgary</option>
+            <option value="Vancouver">Vancouver</option>
+            <option value="Ottawa">Ottawa</option>
+            <option value="Edmonton">Edmonton</option>
+
+        </select><br><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" required><br><br>
+
+        <label for="area">Area (m<sup>2</sup>):</label>
+        <input type="number" id="area" step="0.01" required><br><br>
+
+        <label for="capacity">Capacity:</label>
+        <input type="number" id="capacity" required><br><br>
+
+        <label for="smoking">Smoking:</label>
+        <select id="smoking" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select><br><br>
+
+        <label for="parking">Parking:</label>
+        <select id="parking" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select><br><br>
+
+        <label for="distanceToTransport">Distance to Transport (minutes):</label>
+        <input type="number" id="distanceToTransport" required><br><br>
+
+        <label for="images">Images:</label>
+        <input type="file" id="images" accept="image/*" multiple required><br><br>
+
+        <button type="submit" id="createWorkspaceBtn">Create Workspace</button>
+    </form>
+    
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>At Office Rental Website, we specialize in providing flexible and affordable office space solutions for businesses of all sizes.
+                     Our mission is to empower businesses to thrive by offering personalized support and premium workspace options. 
+                     Contact us today to find the perfect office space for your needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><strong>Address:</strong> 123 Main Street, Calgary, AB T1X 0X0</li>
+                    <li><strong>Phone:</strong> (123) 456-7890</li>
+                    <li><strong>Email:</strong> info@officerentalwebsite.com</li>
+                </ul>
+                <p>Our office hours are Monday to Friday, 9:00 AM to 5:00 PM.</p>
+                <p>We look forward to hearing from you!</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#index.html">Home</a></li>
+                    <li><a href="#FindaWorkspace.html">Services</a></li>
+                    <li><a href="#Contactus.html">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="bottom-footer">
+            <p>&copy; 2024 WorkWise. All rights reserved.</p></p>
+        </div>
+    </footer>
+    <script src="scriptCreateWorkspace.js"></script>
+</body>
+</html>

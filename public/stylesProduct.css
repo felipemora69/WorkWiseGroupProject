@@ -1,0 +1,390 @@
+body{
+    margin: 20px;
+    font-family: 'Montserrat', serif;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    z-index: 100;
+    background-color: white;
+}
+
+/*-------NavBar------------*/
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    z-index: 1000;
+    overflow: hidden;
+    
+}
+
+.container {
+    display: flex;
+    align-items: center;
+}
+
+/*-------Logo------------*/
+
+.logo a {
+    font-size: 2.2rem;
+    padding-right: 30rem;
+    margin-left: 5rem;
+    font-weight: 600;
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+}
+
+/*-------Navigation Links------------*/
+
+.menu-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-list li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu-list li:last-child {
+    margin-right: 0;
+}
+
+.menu-list li a {
+    color: #000;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.menu-list .login-link {
+    margin-right: -8px;
+}
+
+.menu-list .signup-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding-left: 15px;
+    border-left: 1px solid #000;
+}
+
+.menu-list .signup-link:hover {
+    color: #2185D5;
+    cursor: pointer;
+}
+
+.menu-list li a:hover {
+    color: #2185D5;
+    cursor: pointer;
+}
+
+.menu-list .a2 {
+    margin-right: 4rem;
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.image-gallery {
+    position: relative;
+    width: 800px; 
+    height: 600px; 
+    overflow: hidden;
+    margin:40px;
+
+}
+
+.image-gallery img {
+    display: block;
+    width: 100%; 
+    height:  100%;
+    object-fit: cover; 
+}
+
+#prevButton,
+#nextButton {
+    top: 600px;
+    position: absolute;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.5); 
+    border: none;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+}
+
+#prevButton {
+    left: 5%; 
+}
+
+#nextButton {
+    right: 500px; 
+}
+
+
+#prevButton i,
+#nextButton i {
+    font-size: 20px; 
+}
+
+#backButton{
+    background-color: rgba(33, 133, 213, 0.1);  
+    border: none;
+    padding: 10px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 30px;
+    margin-top: 40px;
+
+}
+#backButton i{
+    font-size: 20px; 
+
+}
+
+#workspace-title{
+    margin-top: 30px;
+    font-size: 3rem;
+    margin-left: 35px;
+    font-weight: bold;
+}
+
+#price, 
+#location{
+    font-size: 20px;
+    position: absolute;
+    top: 270px;
+    transform: translateY(-50%);
+
+}
+
+#price {
+    right: 5%;
+}
+
+#location {
+    right: 250px;
+}
+
+#booking{
+    position: absolute;
+    top: 550px;
+    right: 2%;
+    width: 30%;
+    transform: translateY(-50%);
+    padding: 20px;
+}
+
+#booking h2 {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+#booking input[type="date"], 
+#booking input[type="time"] {
+    width: calc(50% - 5px);
+    margin-right: 10px;
+}
+
+#booking input[type="time"] {
+    width: calc(50% - 15px);
+}
+
+#booking #total {
+    margin-top: 20px;
+    font-size: 20px;
+}
+
+#booking #rentNow {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* start date and end date to display next to each other */
+.date-inputs h2,
+.date-inputs input[type="date"],
+.time-inputs h2,
+.time-inputs input[type="time"] {
+    display: inline-block;
+    width: calc(50% - 10px); 
+    margin-right: 10px; 
+    font-size: 18px; 
+}
+
+#total {
+    font-size: 20px; 
+}
+
+#rentNow {
+    display: block;
+    width: 100%; 
+    padding: 10px 20px; 
+    font-size: 18px; 
+    margin-top: 20px; 
+    background-color: #2185D5; 
+    color: white;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer;
+}
+
+#rentNow:hover {
+    background-color: #136cb4; 
+}
+
+#info{
+    margin-left: 50px;
+    width: calc(68% - 40px);
+    float: left;
+    clear: both;
+    padding-right: 40px;
+}
+
+#info h3 {
+    margin-left: 40px;
+    font-size: 22px;
+}
+
+#info div {
+    margin-bottom: 40px;
+}
+
+#info div:last-child {
+    margin-bottom: 0;
+}
+
+#description{
+    text-align: justify;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+
+
+/*-------Footer----------*/
+
+footer {
+    background-color: #f5eeee;
+    color: #000;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 30px 0;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+    clear: both;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1800px;
+    margin: 0 0 0 180px;
+}
+
+.footer-section {
+    flex: 1;
+    margin-right: 100px;
+}
+
+.footer-section:last-child {
+    margin-right: 0;
+}
+
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.footer-section p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    text-align: justify;
+}
+
+.footer-section ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+.footer-section ul li {
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.footer-section ul li strong {
+    font-weight: bold;
+    text-align: left;
+}
+
+.footer-section ul li a {
+    color: #000;
+    text-decoration: none;
+    text-align: left;
+}
+
+.footer-section ul li a:hover {
+    color: #1669b2;
+    cursor: pointer;
+    font-style: italic;
+    font-size: 20px;
+}
+
+.bottom-footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.bottom-footer p {
+    font-size: 16px;
+    font-weight: 500;
+}

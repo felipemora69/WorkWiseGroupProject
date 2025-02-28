@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesFindaWorkspace.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Find a Workspace</title>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <a href="index.html">WorkWise</a>
+                </div>
+                <div class="menu">
+                    <ul class="menu-list">
+                        <li><a href="FindaWorkspace.html">Solutions</a></li>
+                        <li><a href="Contactus.html">Contact Us</a></li>
+                        <li><a class="a2" href="login.html">Profile</a></li>
+                        <li><a href="login.html" class="login-link" >Login<li><a href="signup.html" class="signup-link">SignUp</a></li></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Placeholder for sticky navbar -->
+    <div class="navbar-placeholder"></div>
+    <div id="content-container">
+
+    <h1>What are you looking for?</h1>
+    <p>WorkWise aims to provide a comprehensive platform that connects individuals and businesses with diverse workspace solutions tailored to their specific needs. From private offices to event spaces, our platform offers a wide range of options curated to facilitate productivity, collaboration, and flexibility. </p>
+    <div class="workspace-finder">
+        <section id="personal-desktop" class="workspace-category">
+            <h2>Personal Desktop</h2>
+        </section>
+        <section id="private-office" class="workspace-category">
+            <h2>Private Office</h2>
+        </section>
+        <section id="small-meeting-room" class="workspace-category">
+            <h2>Small Meeting Room</h2>
+        </section>
+        <section id="big-meeting-room" class="workspace-category">
+            <h2>Big Meeting Room</h2>
+        </section>
+        <section id="whole-floor-office" class="workspace-category">
+            <h2>Whole Floor Office</h2>
+        </section>
+        <section id="for-events" class="workspace-category">
+            <h2>Venues</h2>
+        </section>
+    <div id="search-bar" class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+    <div id="filter-section" class="filter-section">
+        <select id="locationFilter">
+            <option value="">Filter by Location</option>
+            <option value="Calgary">Calgary - Alberta</option>
+            <option value="Toronto">Toronto - Ontario</option>
+            <option value="Vancouver">Vancouver - British Columbia</option>
+            <option value="Edmonton">Edmonton - Alberta</option>
+            <option value="Ottawa">Ottawa - Ontario</option>
+        </select>
+        <select id="priceSort">
+            <option value="">Sort by Price</option>
+            <option value="asc">Price: Low to High</option>
+            <option value="desc">Price: High to Low</option>
+        </select>
+    </div>
+    <div id="workspace-container" class="workspace-container"></div>
+    </div>
+</div>
+    <footer id="mainFooter">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>At Office Rental Website, we specialize in providing flexible and affordable office space solutions for businesses of all sizes.
+                     Our mission is to empower businesses to thrive by offering personalized support and premium workspace options. 
+                     Contact us today to find the perfect office space for your needs.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><strong>Address:</strong> 123 Main Street, Calgary, AB T1X 0X0</li>
+                    <li><strong>Phone:</strong> (123) 456-7890</li>
+                    <li><strong>Email:</strong> info@officerentalwebsite.com</li>
+                </ul>
+                <p>Our office hours are Monday to Friday, 9:00 AM to 5:00 PM.</p>
+                <p>We look forward to hearing from you!</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="FindaWorkspace.html">Solutions</a></li>
+                    <li><a href="Contactus.html">Contact Us</a></li>
+                </ul>
+            </div>
+        <div class="bottom-footer">
+            <p>&copy; 2024 WorkWise. All rights reserved.</p></p>
+        </div>
+    </div>
+    </footer>
+    <script src="scriptFindaWorkspace.js"></script>
+</body>
+</html>
