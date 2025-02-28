@@ -17,7 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to MongoDB
 require('dotenv').config();
-const mongoose = require('mongoose');
 
 const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI).then(() => {
@@ -93,9 +92,11 @@ app.get('/co-worker', isAuthenticated, (req, res) => {
 });
 
 // Serverless function handler for Vercel
-module.exports = (req, res) => {
-    app(req, res);
-};
+app.get('/', (req, res) => {
+    res.send('Hello, Vercel!');
+});
+
+module.exports = app;
 
 app.use('/api', workspaceRoutes);
 app.use('/', bookingRouter);
