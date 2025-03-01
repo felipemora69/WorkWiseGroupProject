@@ -41,7 +41,7 @@ document.getElementById("signup-form").addEventListener("submit", async function
 
     try {
         // Send signup data to server
-        const response = await fetch('/user/signup', {
+        const response = await fetch('https://work-wise-group-project.vercel.app/user/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

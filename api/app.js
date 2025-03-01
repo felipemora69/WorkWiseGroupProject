@@ -15,8 +15,14 @@ const { google } = require('googleapis');
 require('dotenv').config();
 
 const cors = require('cors');
-// Enable CORS for all routes
-app.use(cors());
+// Enable CORS for a specific domain (your frontend URL)
+const corsOptions = {
+    origin: 'https://work-wise-group-project.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+};
+
+app.use(cors(corsOptions)); // Apply CORS middleware globally
 
 const app = express();
 app.use(express.json());
