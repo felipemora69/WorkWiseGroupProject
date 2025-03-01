@@ -17,12 +17,20 @@ require('dotenv').config();
 const cors = require('cors');
 // Enable CORS for a specific domain (your frontend URL)
 const corsOptions = {
-    origin: 'https://work-wise-group-project.vercel.app',
+    origin: (origin, callback) => {
+        // Allow all subdomains of work-wise-group-project.vercel.app
+        if (!origin || origin.includes('work-wise-group-project.vercel.app')) {
+            callback(null, true); // Allow the origin
+        } else {
+            callback(new Error('Not allowed by CORS')); // Block other origins
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
+    credentials: true, // Allow sending cookies or authentication tokens
 };
 
-app.use(cors(corsOptions)); // Apply CORS middleware globally
+app.use(cors(corsOptions)); // Apply the CORS middleware globally
+
 
 const app = express();
 app.use(express.json());
