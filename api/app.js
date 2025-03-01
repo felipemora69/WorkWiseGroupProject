@@ -13,12 +13,22 @@ const multer = require('multer');
 const fs = require('fs');
 const { google } = require('googleapis');
 require('dotenv').config();
+const cors = require('cors'); 
 
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Enable CORS to allow cross-origin requests from your frontend domain
+const corsOptions = {
+    origin: 'https://work-wise-group-project.vercel.app',  // Allow only your frontend URL
+    methods: ['GET', 'POST'],  // Allow these HTTP methods
+    credentials: true  // Allow cookies (if needed)
+};
+
+app.use(cors(corsOptions));
 
 // Google OAuth2 Client Setup
 const oauth2Client = new google.auth.OAuth2(
@@ -59,6 +69,32 @@ app.get('/login', (req, res) => {
     }catch (error) {
         console.error('Error serving login.html:', error);
         res.status(500).send('Internal Server Error');
+    }
+});
+
+// User login API endpoint
+app.post('/user/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        // Assume you're using a User model to find users in MongoDB
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Invalid credentials' });
+        }
+
+        // Generate token (implement your JWT logic here)
+        const token = generateToken(user);  // Replace this with actual token generation logic
+
+        res.json({ token, userType: user.userType });  // Respond with token and userType (if relevant)
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
