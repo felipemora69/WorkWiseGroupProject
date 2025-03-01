@@ -14,6 +14,10 @@ const fs = require('fs');
 const { google } = require('googleapis');
 require('dotenv').config();
 
+const cors = require('cors');
+// Enable CORS for all routes
+app.use(cors());
+
 const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
