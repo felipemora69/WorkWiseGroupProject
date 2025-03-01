@@ -15,24 +15,27 @@ document.querySelector('.login-form').addEventListener('submit', async function(
             body: JSON.stringify({email, password})
         });
 
-        const text = await response.text();  // Read the raw response text
-        console.log('Raw response:', text);  // Log the raw response for debugging
+        if (!response.ok) {
+            // Handle unsuccessful responses (non-2xx HTTP statuses)
+            const errorData = await response.json();  // Use .json() to parse the response
+            console.error('Login failed:', errorData.error || 'Unknown error');
+            alert(errorData.error || 'Unknown error');
+            return;
+        }
 
-        const data = JSON.parse(text);  // Try to parse the response as JSON
+        const data = await response.json();
         console.log('Parsed data:', data);
 
-        if (response.ok) {
-            // Handle successful login
-            localStorage.setItem('token', data.token);
-            if (data.userType === 'owner') {
-                window.location.href = '/owner.html';
-            } else if (data.userType === 'coworker') {
-                window.location.href = '/co-worker.html';
-            }
-        } else {
-            console.error('Login failed:', data.error);
+        // Handle successful login
+        localStorage.setItem('token', data.token);
+        if (data.userType === 'owner') {
+            window.location.href = '/owner.html';
+        } else if (data.userType === 'coworker') {
+            window.location.href = '/co-worker.html';
         }
+
     } catch (error) {
         console.error('Login error:', error);
+        alert('An error occurred during login. Please try again.');
     }
 });
