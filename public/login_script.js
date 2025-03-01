@@ -7,7 +7,7 @@ document.querySelector('.login-form').addEventListener('submit', async function(
 
     try {
         // Send login credentials to server for authentication
-        const response = await fetch('/user/login', {
+        const response = await fetch('https://work-wise-group-project-fefndwv6u-felipemora69s-projects.vercel.app/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
